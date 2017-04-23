@@ -46,5 +46,6 @@ public class ClientApp {
 
         clientReceiver.start();
         clientSender.start();
+        System.out.println("This client is established");
     }
 }

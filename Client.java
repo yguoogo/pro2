@@ -23,6 +23,8 @@ public class Client {
     private int timerCounter;
     private int lastPackatNum;
 
+    private PackageCreator pkCreator = new PackageCreator();
+
 
     public Client(int N_num, int MSS_num, String fileName_str, int timer_time) throws IOException {
         clientSocket = new DatagramSocket(9999); // sender socket set port number
@@ -39,7 +41,7 @@ public class Client {
         byte[] b = new byte[MSS];
 
         while (filedata.read(b) != -1){
-            unsendPackets.put(sequenceNum, createPacket(sequenceNum, b, pkType));
+            unsendPackets.put(sequenceNum, pkCreator.createPacket(sequenceNum, b, pkType));
             sequenceNum++;
             b = new byte[MSS];
         }
@@ -47,70 +49,8 @@ public class Client {
 
     }
 
-    private byte[] calculateCheckSum(int sequenceNum, byte[] data, short packetTpye){
-
-        byte[] checkSumBytes = new byte[2];
-
-        int checkSumSize = 0xffff;
-        int checkSum_32 = 0;
-
-        checkSum_32 += sequenceNum;
-        checkSum_32 += (packetTpye & checkSumSize);
-
-        short checkSum_16 = (short) (checkSum_32 & checkSumSize);
-
-        int bit_16_num = data.length / 2;
-
-        int offsite = 0;
-        for(long i = 0; i < bit_16_num; i++){
-            ByteBuffer bf = ByteBuffer.wrap(data, offsite, 2);
-            offsite += 2;
-            checkSum_16 += bf.getShort();
-        }
-
-        if(data.length % 2 != 0){
-            checkSum_16 = (short)( (short) data[data.length -1] + checkSum_16 );
-        }
-
-        ByteBuffer bf = ByteBuffer.allocate(2);
-        bf.putShort(checkSum_16);
-        checkSumBytes = bf.array();
-        return checkSumBytes;
-    }
-
-    private byte[] joinByteArray(byte[] first, byte[] second){
-        byte[] combinedArray = new byte[first.length + second.length];
-        System.arraycopy(first, 0, combinedArray, 0, first.length);
-        System.arraycopy(second, 0, combinedArray, first.length, second.length);
-
-        return combinedArray;
-    }
-
-    private DatagramPacket createPacket(int sequenceNum, byte[] data, short packetTpye) throws UnknownHostException {
-
-        // add data into checkSum
-        ByteBuffer bf = ByteBuffer.allocate(4);
-        bf.putInt(sequenceNum);
-        byte[] seqNumBytes = bf.array();
-
-        ByteBuffer pt = ByteBuffer.allocate(2);
-        pt.putShort(packetTpye);
-        byte[] pkTypeBytes = pt.array();
-        byte[] checkSum = calculateCheckSum(sequenceNum,data,packetTpye);
-
-
-        // create packet data field
-        byte[] d1 = joinByteArray(seqNumBytes, pkTypeBytes);
-        byte[] header = joinByteArray(d1, checkSum);
-        byte[] dataField = joinByteArray(header, data);
-
-        InetAddress ad = InetAddress.getLocalHost();
-        DatagramPacket dp = new DatagramPacket(dataField,dataField.length, ad,7735);
-        return dp;
-    }
-
     private void rdt_send(int sequenceNumber, byte[] data, short pkType, DatagramSocket clientSocket) throws IOException {
-        DatagramPacket pk = createPacket(sequenceNumber,data, pkType);
+        DatagramPacket pk = pkCreator.createPacket(sequenceNumber, data, pkType);
         clientSocket.send(pk);
     }
 
