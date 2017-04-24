@@ -57,6 +57,7 @@ public class Server {
                 if (sequenceNum == expectedSeq) {
                     expectedSeq++; // increase by 1
                     out.write(dataBf);
+                    System.out.println("write data seq " + sequenceNum);
                     DatagramPacket ack = new DatagramPacket(sequenceNumBytes, sequenceNumBytes.length, dp.getAddress(), dp.getPort());
                     serverSocket.send(ack);
                 }
