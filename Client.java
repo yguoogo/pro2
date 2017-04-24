@@ -19,11 +19,12 @@ public class Client {
 
     private Object lock = new Object();
     private Object timer_lock = new Object();
-    private Timer timer;
+    private Timer receivertimer;
     private int timerCounter;
     private int lastPackatNum;
 
     private PackageCreator pkCreator = new PackageCreator();
+    private int mark = 0;
 
 
     public Client(int N_num, int MSS_num, String fileName_str, int timer_time) throws IOException {
@@ -36,7 +37,7 @@ public class Client {
         short pkType = 0b0101010101010101;
         InputStream filedata = new FileInputStream(fileName);
         int sequenceNum = 0;
-        timer = new Timer();
+        receivertimer = new Timer();
         timerCounter = timer_time;
         byte[] b = new byte[MSS];
 
@@ -59,13 +60,16 @@ public class Client {
         public TimerTaskTest01(Timer t){
             timer = t;
         }
+
         public void run() {
+            mark++;
             synchronized (lock){
                 int flag = 0;
                 for(Map.Entry<Integer, DatagramPacket> entry : unAckPackets.entrySet()){
                     try {
                         if(flag == 0) {
                             System.out.println("Packet loss, sequence number = " + entry.getKey());
+                            System.out.println("mark = " + mark);
                             flag = 1;
                         }
                         clientSocket.send(entry.getValue());
@@ -74,8 +78,10 @@ public class Client {
                     }
                 }
                 synchronized (timer_lock) {
+                    timer.cancel();
                     timer = new Timer();
                     timer.schedule(new TimerTaskTest01(timer), timerCounter);
+                    receivertimer = timer;
                 }
             }
         }
@@ -88,7 +94,7 @@ public class Client {
                 if(unsendPackets.size() == 0 && unAckPackets.size() == 0){
                     long end = System.currentTimeMillis();
                     System.out.println();
-                    System.out.println(end - start);
+                    System.out.println("The running time is " + (end - start));
                     System.exit(0);
                 }
                 int currentUnAckedNum = unAckPackets.size();
@@ -102,7 +108,7 @@ public class Client {
                     //System.out.println("Start sending packet " + i);
                     if(i == winLow){ // only the first window need sender to set timer
                         synchronized (timer_lock) {
-                            timer.schedule(new TimerTaskTest01(timer), timerCounter);
+                            receivertimer.schedule(new TimerTaskTest01(receivertimer), timerCounter);
                         }
                     }
 
@@ -141,10 +147,10 @@ public class Client {
                     winLow = sequenceNumber + 1;
                     winHigh = winLow + N - 1;
                     synchronized (timer_lock){
-                        timer.cancel();
+                        receivertimer.cancel();
                         if(sequenceNumber != lastPackatNum) {
-                            timer = new Timer();
-                            timer.schedule(new TimerTaskTest01(timer), timerCounter);
+                            receivertimer = new Timer();
+                            receivertimer.schedule(new TimerTaskTest01(receivertimer), timerCounter);
                         }else {
                             lock.notify();
                             System.exit(0);
