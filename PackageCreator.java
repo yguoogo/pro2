@@ -13,15 +13,25 @@ public class PackageCreator {
 
     private byte[] calculateCheckSum(int sequenceNum, byte[] data, short packetTpye){
 
+        byte[] seqBytes = ByteBuffer.allocate(4).putInt(sequenceNum).array();
+        byte[] temp = new byte[2];
+        System.arraycopy(seqBytes, 0, temp, 0, 2);
+        short seqfst16 = ByteBuffer.wrap(temp).getShort();
+
+        System.arraycopy(seqBytes, 2, temp, 0, 2);
+        short seqsed16 = ByteBuffer.wrap(temp).getShort();
+
+        short checkSum_16 =  (short) (seqsed16 + seqfst16 + packetTpye);
+
         byte[] checkSumBytes = new byte[2];
 
-        int checkSumSize = 0xffff;
+        /*int checkSumSize = 0xffff;
         int checkSum_32 = 0;
 
         checkSum_32 += sequenceNum;
         checkSum_32 += (packetTpye & checkSumSize);
 
-        short checkSum_16 = (short) (checkSum_32 & checkSumSize);
+        short checkSum_16 = (short) (checkSum_32 & checkSumSize);*/
 
         int bit_16_num = data.length / 2;
 
@@ -36,6 +46,7 @@ public class PackageCreator {
             checkSum_16 = (short)( (short) data[data.length -1] + checkSum_16 );
         }
 
+        checkSum_16 = (short) (checkSum_16 ^ 0xffff);
         ByteBuffer bf = ByteBuffer.allocate(2);
         bf.putShort(checkSum_16);
         checkSumBytes = bf.array();

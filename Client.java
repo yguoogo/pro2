@@ -61,8 +61,13 @@ public class Client {
         }
         public void run() {
             synchronized (lock){
+                int flag = 0;
                 for(Map.Entry<Integer, DatagramPacket> entry : unAckPackets.entrySet()){
                     try {
+                        if(flag == 0) {
+                            System.out.println("Packet loss, sequence number = " + entry.getKey());
+                            flag = 1;
+                        }
                         clientSocket.send(entry.getValue());
                     } catch (IOException e) {
                         e.printStackTrace();
