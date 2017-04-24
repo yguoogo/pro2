@@ -32,7 +32,7 @@ public class Server {
         int MSS = 500; // 4 bytes + 4bytes(header) = 8 bytes
         DatagramSocket serverSocket = new DatagramSocket(7735);
         InetAddress ad = InetAddress.getLocalHost();
-        OutputStream out = new FileOutputStream(System.getProperty("user.dir")+"/test.db");
+        OutputStream out = new FileOutputStream(System.getProperty("user.dir")+"/words.txt.zip");
         int expectedSeq = 0;
         int flag = 0;
         Random rd = new Random();

@@ -14,9 +14,9 @@ public class ClientApp {
 
         int N = 4;
         int MSS = 500;
-        String fileName = "/Users/yuguanxu/IdeaProjects/573Project2advance/src/test1Mb.db";
+        String fileName = "/Users/yuguanxu/IdeaProjects/573Project2advance/src/wordstest.txt.zip";
 
-        Client clientEntity = new Client(N, MSS, fileName,2*1000);
+        Client clientEntity = new Client(N, MSS, fileName,500);
 
         Thread clientReceiver = new Thread(new Runnable() {
             @Override
