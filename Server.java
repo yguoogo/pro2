@@ -28,11 +28,11 @@ public class Server {
         }
     }
     public static void main(String[] args) throws IOException{
-        double p = 0.5; // p is the probability to lose the package
-        int MSS = 4; // 4 bytes + 4bytes(header) = 8 bytes
+        double p = 0.05; // p is the probability to lose the package
+        int MSS = 500; // 4 bytes + 4bytes(header) = 8 bytes
         DatagramSocket serverSocket = new DatagramSocket(7735);
         InetAddress ad = InetAddress.getLocalHost();
-        OutputStream out = new FileOutputStream(System.getProperty("user.dir")+"/b.txt");
+        OutputStream out = new FileOutputStream(System.getProperty("user.dir")+"/b.pdf");
         int expectedSeq = 0;
         int flag = 0;
         Random rd = new Random();
@@ -43,13 +43,14 @@ public class Server {
             DatagramPacket dp = new DatagramPacket(buffer,buffer.length);
             serverSocket.receive(dp);
 
-            System.out.printf("receive");
+            //System.out.printf("receive ");
             System.arraycopy(buffer, 8, dataBf, 0, MSS);
 
             byte[] sequenceNumBytes = new byte[4];
             System.arraycopy(buffer, 0, sequenceNumBytes, 0, 4);
             int sequenceNum = ByteBuffer.wrap(sequenceNumBytes).getInt();
-            System.out.println(sequenceNum);
+
+            //System.out.println(sequenceNum);
 
 
             if(rd.nextDouble() > p && checkChecksum(buffer)) {
@@ -62,7 +63,7 @@ public class Server {
             }else{
                 System.out.println("Packate loss, sequence number = " + sequenceNum );
                 if(!checkChecksum(buffer)){
-                    System.out.println("checksum error");
+                    //System.out.println("checksum error");
                 }
             }
         }

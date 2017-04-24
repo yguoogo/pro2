@@ -13,8 +13,8 @@ public class ClientApp {
         int MSS = Integer.parseInt(args[4]);*/
 
         int N = 4;
-        int MSS = 4;
-        String fileName = "/Users/yuguanxu/IdeaProjects/573Project2advance/src/a.txt";
+        int MSS = 500;
+        String fileName = "/Users/yuguanxu/IdeaProjects/573Project2advance/src/test1Mb.db";
 
         Client clientEntity = new Client(N, MSS, fileName,5*1000);
 

@@ -10,6 +10,11 @@ public class PackageCreator {
     private int sequenceNum;
     private byte[] data;
     private short packetType;
+    private InetAddress serverIp;
+
+    public PackageCreator() throws UnknownHostException {
+        serverIp =  InetAddress.getByName("152.7.99.181");
+    }
 
     private byte[] calculateCheckSum(int sequenceNum, byte[] data, short packetTpye){
 
@@ -79,8 +84,7 @@ public class PackageCreator {
         byte[] header = joinByteArray(d1, checkSum);
         byte[] dataField = joinByteArray(header, data);
 
-        InetAddress ad = InetAddress.getLocalHost();
-        DatagramPacket dp = new DatagramPacket(dataField,dataField.length, ad,7735);
+        DatagramPacket dp = new DatagramPacket(dataField,dataField.length, serverIp,7735);
         return dp;
     }
 }

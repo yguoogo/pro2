@@ -82,10 +82,13 @@ public class Client {
     }
 
     public void sender() throws IOException, InterruptedException {
-        System.out.println("Start sending packets");
+        long start = System.currentTimeMillis();
         while(true){
             synchronized (lock){
                 if(unsendPackets.size() == 0 && unAckPackets.size() == 0){
+                    long end = System.currentTimeMillis();
+                    System.out.println();
+                    System.out.println(end - start);
                     System.exit(0);
                 }
                 int currentUnAckedNum = unAckPackets.size();
@@ -93,11 +96,10 @@ public class Client {
                     if(i > lastPackatNum){
                         break;
                     }
-                    System.out.println("Prepare to send packet " + i);
                     DatagramPacket nextPacket = unsendPackets.remove(i); // delete
                     unAckPackets.put(i, nextPacket);  // put into unacknowledged map
                     clientSocket.send(nextPacket);// retrieve packet from unAcked packets
-                    System.out.println("Start sending packet " + i);
+                    //System.out.println("Start sending packet " + i);
                     if(i == winLow){ // only the first window need sender to set timer
                         synchronized (timer_lock) {
                             timer.schedule(new TimerTaskTest01(timer), timerCounter);
@@ -127,7 +129,7 @@ public class Client {
         while (true){
             clientSocket.receive(pk); // equal to wait
             int sequenceNumber = ByteBuffer.wrap(data).getInt();
-            System.out.println("Receive ack " + sequenceNumber);
+            //System.out.println("Receive ack " + sequenceNumber);
 
             if(sequenceNumber >= expectAckNum){
                 expectAckNum = sequenceNumber + 1;
