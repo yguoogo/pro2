@@ -67,7 +67,6 @@ public class PackageCreator {
         return combinedArray;
     }
 
-
     public DatagramPacket createPacket(int sequenceNum, byte[] data, short packetType) throws UnknownHostException {
 
         // add data into checkSum

@@ -13,6 +13,8 @@ public class Client {
     private String fileName;
     private int winLow;
     private int winHigh;
+    private int timerCounter;
+    private int lastPackatNum;
 
     private TreeMap<Integer, DatagramPacket> unsendPackets = new TreeMap<>();
     private TreeMap<Integer, DatagramPacket> unAckPackets = new TreeMap<>();
@@ -20,11 +22,8 @@ public class Client {
     private Object lock = new Object();
     private Object timer_lock = new Object();
     private Timer receivertimer;
-    private int timerCounter;
-    private int lastPackatNum;
 
     private PackageCreator pkCreator = new PackageCreator();
-    private int mark = 0;
 
 
     public Client(int N_num, int MSS_num, String fileName_str, int timer_time) throws IOException {
@@ -62,14 +61,12 @@ public class Client {
         }
 
         public void run() {
-            mark++;
             synchronized (lock){
                 int flag = 0;
                 for(Map.Entry<Integer, DatagramPacket> entry : unAckPackets.entrySet()){
                     try {
                         if(flag == 0) {
                             System.out.println("Packet loss, sequence number = " + entry.getKey());
-                            System.out.println("mark = " + mark);
                             flag = 1;
                         }
                         clientSocket.send(entry.getValue());
