@@ -12,11 +12,11 @@ public class ClientApp {
         int N = Integer.parseInt(args[3]);
         int MSS = Integer.parseInt(args[4]);*/
 
-        int N = 4;
+        int N = 64;
         int MSS = 500;
         String fileName = "/Users/yuguanxu/IdeaProjects/573Project2advance/src/wordstest.txt.zip";
 
-        Client clientEntity = new Client(N, MSS, fileName,500);
+        Client clientEntity = new Client(N, MSS, fileName,100);
 
         Thread clientReceiver = new Thread(new Runnable() {
             @Override

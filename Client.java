@@ -70,7 +70,7 @@ public class Client {
                             flag = 1;
                         }
                         clientSocket.send(entry.getValue());
-                        System.out.println("Start to retransmit packet: " + entry.getKey());
+                        //System.out.println("Start to retransmit packet: " + entry.getKey());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -91,7 +91,7 @@ public class Client {
             synchronized (lock){
                 if(unsendPackets.size() == 0 && unAckPackets.size() == 0){
                     long end = System.currentTimeMillis();
-                    System.out.println();
+                    System.out.println("Time end");
                     System.out.println("The running time is " + (end - start));
                     System.exit(0);
                 }
@@ -151,7 +151,7 @@ public class Client {
                             receivertimer.schedule(new TimerTaskTest01(receivertimer), timerCounter);
                         }else {
                             lock.notify();
-                            System.exit(0);
+                            //System.exit(0);
                         }
                     }
                     lock.notify();

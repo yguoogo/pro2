@@ -28,7 +28,7 @@ public class Server {
         }
     }
     public static void main(String[] args) throws IOException{
-        double p = 0.05; // p is the probability to lose the package
+        double p = 0.01; // p is the probability to lose the package
         int MSS = 500; // 4 bytes + 4bytes(header) = 8 bytes
         DatagramSocket serverSocket = new DatagramSocket(7735);
         InetAddress ad = InetAddress.getLocalHost();

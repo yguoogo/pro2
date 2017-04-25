@@ -13,7 +13,7 @@ public class PackageCreator {
     private InetAddress serverIp;
 
     public PackageCreator() throws UnknownHostException {
-        serverIp =  InetAddress.getByName("152.46.20.59");
+        serverIp =  InetAddress.getByName("152.46.20.16");
         //serverIp = InetAddress.getLocalHost();
     }
 
