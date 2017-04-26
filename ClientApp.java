@@ -13,7 +13,7 @@ public class ClientApp {
         int MSS = Integer.parseInt(args[4]);*/
 
         int N = 64;
-        int MSS = 100;
+        int MSS = 500;
         String fileName = "/Users/yuguanxu/IdeaProjects/573Project2advance/src/wordstest.txt.zip";
 
         Client clientEntity = new Client(N, MSS, fileName,100);
