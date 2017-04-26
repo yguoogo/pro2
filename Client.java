@@ -104,11 +104,14 @@ public class Client {
                     unAckPackets.put(i, nextPacket);  // put into unacknowledged map
                     clientSocket.send(nextPacket);// retrieve packet from unAcked packets
                     //System.out.println("Start sending packet " + i);
-                    if(i == winLow + currentUnAckedNum){ // only the first window need sender to set timer
+                    /*if(i == winLow + currentUnAckedNum){ // only the first window need sender to set timer
                         synchronized (timer_lock) {
                             receivertimer.schedule(new TimerTaskTest01(receivertimer), timerCounter);
                         }
-                    }
+                    }*/
+                }
+                synchronized (timer_lock) {
+                    receivertimer.schedule(new TimerTaskTest01(receivertimer), timerCounter);
                 }
                 lock.wait();
             }
