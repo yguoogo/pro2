@@ -28,8 +28,9 @@ public class Server {
         }
     }
     public static void main(String[] args) throws IOException{
-        double p = 0.01; // p is the probability to lose the package
-        int MSS = 500; // 4 bytes + 4bytes(header) = 8 bytes
+        double p = 0.05; // p is the probability to lose the package
+        //int MSS = 500; // 4 bytes + 4bytes(header) = 8 bytes
+        int MSS = Integer.parseInt(args[0]);
         DatagramSocket serverSocket = new DatagramSocket(7735);
         InetAddress ad = InetAddress.getLocalHost();
         OutputStream out = new FileOutputStream(System.getProperty("user.dir")+"/words.txt.zip");
