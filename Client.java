@@ -41,7 +41,7 @@ public class Client {
         byte[] b = new byte[MSS];
 
         byte[] MSSnum = ByteBuffer.allocate(4).putInt(MSS).array();
-        unsendPackets.put(sequenceNum, pkCreator.createPacket(0, MSSnum, pkType));
+        unsendPackets.put(0, pkCreator.createPacket(0, MSSnum, pkType));
 
         while (filedata.read(b) != -1){
             unsendPackets.put(sequenceNum, pkCreator.createPacket(sequenceNum, b, pkType));

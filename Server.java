@@ -36,7 +36,7 @@ public class Server {
         //int MSS = Integer.parseInt(args[0]);
         DatagramSocket serverSocket = new DatagramSocket(port);
         InetAddress ad = InetAddress.getLocalHost();
-        OutputStream out = new FileOutputStream(System.getProperty("user.dir")+targetName);
+        OutputStream out = new FileOutputStream(System.getProperty("user.dir/")+targetName);
         int expectedSeq = 0;
         int flag = 0;
         Random rd = new Random();
