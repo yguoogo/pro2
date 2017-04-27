@@ -35,10 +35,13 @@ public class Client {
         winHigh = winLow + N - 1;
         short pkType = 0b0101010101010101;
         InputStream filedata = new FileInputStream(fileName);
-        int sequenceNum = 0;
+        int sequenceNum = 1;
         receivertimer = new Timer();
         timerCounter = timer_time;
         byte[] b = new byte[MSS];
+
+        byte[] MSSnum = ByteBuffer.allocate(4).putInt(MSS).array();
+        unsendPackets.put(sequenceNum, pkCreator.createPacket(0, MSSnum, pkType));
 
         while (filedata.read(b) != -1){
             unsendPackets.put(sequenceNum, pkCreator.createPacket(sequenceNum, b, pkType));
@@ -66,7 +69,7 @@ public class Client {
                 for(Map.Entry<Integer, DatagramPacket> entry : unAckPackets.entrySet()){
                     try {
                         if(flag == 0) {
-                            System.out.println("Packet loss, sequence number = " + entry.getKey());
+                            System.out.println("Timeout, sequence number = " + entry.getKey());
                             flag = 1;
                         }
                         clientSocket.send(entry.getValue());

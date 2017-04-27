@@ -29,13 +29,15 @@ public class Server {
     }
     public static void main(String[] args) throws IOException{
         //double p = 0.05; // p is the probability to lose the package
-        double p = Double.parseDouble(args[0]);
-        int MSS = 500; // 4 bytes + 4bytes(header) = 8 bytes
+        int port = Integer.parseInt(args[0]);
+        String targetName = args[1];
+        double p = Double.parseDouble(args[2]);
+        int MSS = 4; // 4 bytes + 4bytes(header) = 8 bytes
         //int MSS = Integer.parseInt(args[0]);
         DatagramSocket serverSocket = new DatagramSocket(7735);
         InetAddress ad = InetAddress.getLocalHost();
-        OutputStream out = new FileOutputStream(System.getProperty("user.dir")+"/words.txt.zip");
-        int expectedSeq = 0;
+        OutputStream out = new FileOutputStream(System.getProperty("user.dir")+targetName);
+        int expectedSeq = 1;
         int flag = 0;
         Random rd = new Random();
         System.out.println("server is ready");
@@ -56,6 +58,12 @@ public class Server {
 
 
             if(rd.nextDouble() > p && checkChecksum(buffer)) {
+                if(sequenceNum == 0){
+                    MSS = ByteBuffer.wrap(dataBf).getInt();
+                    DatagramPacket ack = new DatagramPacket(sequenceNumBytes, sequenceNumBytes.length, dp.getAddress(), dp.getPort());
+                    serverSocket.send(ack);
+                    continue;
+                }
                 if (sequenceNum == expectedSeq) {
                     expectedSeq++; // increase by 1
                     out.write(dataBf);
