@@ -94,8 +94,8 @@ public class Client {
             synchronized (lock){
                 if(unsendPackets.size() == 0 && unAckPackets.size() == 0){
                     long end = System.currentTimeMillis();
-                    System.out.println("Time end");
-                    System.out.println("The running time is " + (end - start));
+                    //System.out.println("Time end");
+                    //System.out.println("The running time is " + (end - start));
                     System.exit(0);
                 }
                 int currentUnAckedNum = unAckPackets.size();

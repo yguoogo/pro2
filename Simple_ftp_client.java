@@ -42,6 +42,6 @@ public class Simple_ftp_client {
 
         clientReceiver.start();
         clientSender.start();
-        System.out.println("This client is established");
+        //System.out.println("This client is established");
     }
 }

@@ -1,0 +1,7 @@
+This program is based on java, to run it, make sure your machine have java.
+
+How to compile it: For server, type "javac Simple_ftp_server.java"
+		 : For client, type "javac Simple_ftp_client"
+
+How to run it: For server, type "java Simple_ftp_server port# file-name p"
+	       For client, type "java Simple_ftp_client server-host-name server-port# file-name N MSS"

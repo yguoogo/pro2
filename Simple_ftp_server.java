@@ -41,7 +41,7 @@ public class Simple_ftp_server {
         int expectedSeq = 0;
         int flag = 0;
         Random rd = new Random();
-        System.out.println("server is ready");
+        //System.out.println("server is ready");
         while (true){
             byte[] dataBf = new byte[MSS];
             byte[] buffer = new byte[8+MSS];
