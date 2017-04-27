@@ -10,7 +10,7 @@ import java.util.Random;
 /**
  * Created by yuguanxu on 4/9/17.
  */
-public class Server {
+public class Simple_ftp_server {
 
     private static boolean checkChecksum(byte[] buffer){
         short checkError = 0;
