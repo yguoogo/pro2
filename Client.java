@@ -88,7 +88,7 @@ public class Client {
         }
     }
 
-    public void sender() throws IOException, InterruptedException {
+    public void sender(int portNum, String serverHostName) throws IOException, InterruptedException {
         long start = System.currentTimeMillis();
         while(true){
             synchronized (lock){
