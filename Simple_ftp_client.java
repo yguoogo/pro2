@@ -12,7 +12,7 @@ public class Simple_ftp_client {
         int N = Integer.parseInt(args[3]);
         int MSS = Integer.parseInt(args[4]);
 
-        Client clientEntity = new Client(N, MSS, fileName,100);
+        Client clientEntity = new Client(N, MSS, fileName,100, serverPortNum, serverHostName);
 
         Thread clientReceiver = new Thread(new Runnable() {
             @Override
@@ -31,7 +31,7 @@ public class Simple_ftp_client {
             @Override
             public void run() {
                 try {
-                    clientEntity.sender(serverPortNum, serverHostName);
+                    clientEntity.sender();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {

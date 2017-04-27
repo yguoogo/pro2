@@ -22,12 +22,15 @@ public class Client {
     private Object lock = new Object();
     private Object timer_lock = new Object();
     private Timer receivertimer;
+    private int portNumb;
 
-    private PackageCreator pkCreator = new PackageCreator();
+    private PackageCreator pkCreator;
 
 
-    public Client(int N_num, int MSS_num, String fileName_str, int timer_time) throws IOException {
-        clientSocket = new DatagramSocket(9999); // sender socket set port number
+    public Client(int N_num, int MSS_num, String fileName_str, int timer_time, int port, String serverHostName) throws IOException {
+        pkCreator = new PackageCreator(serverHostName);
+        //clientSocket = new DatagramSocket(9999); // sender socket set port number
+        clientSocket = new DatagramSocket(); // sender socket set port number
         N = N_num;
         MSS = MSS_num;
         fileName = fileName_str;
@@ -39,12 +42,13 @@ public class Client {
         receivertimer = new Timer();
         timerCounter = timer_time;
         byte[] b = new byte[MSS];
+        portNumb = port;
 
         byte[] MSSnum = ByteBuffer.allocate(4).putInt(MSS).array();
-        unsendPackets.put(0, pkCreator.createPacket(0, MSSnum, pkType));
+        unsendPackets.put(0, pkCreator.createPacket(0, MSSnum, pkType, port));
 
         while (filedata.read(b) != -1){
-            unsendPackets.put(sequenceNum, pkCreator.createPacket(sequenceNum, b, pkType));
+            unsendPackets.put(sequenceNum, pkCreator.createPacket(sequenceNum, b, pkType, port));
             sequenceNum++;
             b = new byte[MSS];
         }
@@ -52,8 +56,8 @@ public class Client {
 
     }
 
-    private void rdt_send(int sequenceNumber, byte[] data, short pkType, DatagramSocket clientSocket) throws IOException {
-        DatagramPacket pk = pkCreator.createPacket(sequenceNumber, data, pkType);
+    private void rdt_send(int sequenceNumber, byte[] data, short pkType, DatagramSocket clientSocket, int port) throws IOException {
+        DatagramPacket pk = pkCreator.createPacket(sequenceNumber, data, pkType, port);
         clientSocket.send(pk);
     }
 
@@ -88,7 +92,7 @@ public class Client {
         }
     }
 
-    public void sender(int portNum, String serverHostName) throws IOException, InterruptedException {
+    public void sender() throws IOException, InterruptedException {
         long start = System.currentTimeMillis();
         while(true){
             synchronized (lock){
@@ -96,6 +100,10 @@ public class Client {
                     long end = System.currentTimeMillis();
                     //System.out.println("Time end");
                     //System.out.println("The running time is " + (end - start));
+                    short fin = 0b0111111111111111;
+                    byte[] b = new byte[MSS];
+                    clientSocket.send(pkCreator.createPacket(lastPackatNum+1, b, fin, portNumb));
+                    clientSocket.send(pkCreator.createPacket(Integer.MAX_VALUE, b, fin, portNumb));
                     System.exit(0);
                 }
                 int currentUnAckedNum = unAckPackets.size();
