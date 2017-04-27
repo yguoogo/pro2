@@ -34,10 +34,10 @@ public class Server {
         double p = Double.parseDouble(args[2]);
         int MSS = 4; // 4 bytes + 4bytes(header) = 8 bytes
         //int MSS = Integer.parseInt(args[0]);
-        DatagramSocket serverSocket = new DatagramSocket(7735);
+        DatagramSocket serverSocket = new DatagramSocket(port);
         InetAddress ad = InetAddress.getLocalHost();
         OutputStream out = new FileOutputStream(System.getProperty("user.dir")+targetName);
-        int expectedSeq = 1;
+        int expectedSeq = 0;
         int flag = 0;
         Random rd = new Random();
         System.out.println("server is ready");
@@ -58,7 +58,8 @@ public class Server {
 
 
             if(rd.nextDouble() > p && checkChecksum(buffer)) {
-                if(sequenceNum == 0){
+                if(sequenceNum == expectedSeq && sequenceNum == 0){
+                    expectedSeq++;
                     MSS = ByteBuffer.wrap(dataBf).getInt();
                     DatagramPacket ack = new DatagramPacket(sequenceNumBytes, sequenceNumBytes.length, dp.getAddress(), dp.getPort());
                     serverSocket.send(ack);
