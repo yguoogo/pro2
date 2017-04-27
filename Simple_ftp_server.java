@@ -64,7 +64,7 @@ public class Simple_ftp_server {
             short fin = 0b0111111111111111;
 
             if(fin == pktype){
-                System.exit(0);s
+                System.exit(0);
             }
             if(sequenceNum == Integer.MAX_VALUE){
                 System.exit(0);
